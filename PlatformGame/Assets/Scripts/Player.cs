@@ -5,11 +5,14 @@ using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
-    public Vector2 inputVec;
     public float maxSpeed;
     public float jumpPower;
+    public float maxHealth;
+    public float curHealth;
+    public bool isLive;
 
     Rigidbody2D rigid;
+    SpriteRenderer spriter;
 
     public bool isJumping = false;
 
@@ -18,39 +21,57 @@ public class Player : MonoBehaviour
     {
         jumpPower = 10f;
         maxSpeed = 3f;
+        maxHealth = 20f;
+        curHealth = maxHealth;
+        isLive = true;
         rigid = GetComponent<Rigidbody2D>();
+        spriter = GetComponent<SpriteRenderer>();
     }
 
     private void Update()
     {
-        if (Input.GetButtonDown("Jump") && !isJumping)
+        if (isLive)
         {
-            rigid.velocity = Vector2.zero;
-            // rigid.AddForce(new Vector2(0, jumpPower));
-            rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
-            isJumping = true;
-        }
-        else if (Input.GetButtonUp("Jump") && rigid.velocity.y > 0)
-        {
-            rigid.velocity = rigid.velocity * 0.5f;
-        }
+            if (Input.GetButton("Jump") && !isJumping)
+            {
+                rigid.velocity = Vector2.zero;
+                // rigid.AddForce(new Vector2(0, jumpPower));
+                rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+                isJumping = true;
+            }
+            else if (Input.GetButtonUp("Jump") && rigid.velocity.y > 0)
+            {
+                rigid.velocity = rigid.velocity * 0.5f;
+            }
 
-        if (Input.GetButtonUp("Horizontal"))
-        {
-            rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
+            if (Input.GetButtonUp("Horizontal"))
+            {
+                rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
+            }
+
+            if (Input.GetButtonDown("Horizontal"))
+                spriter.flipX = Input.GetAxisRaw("Horizontal") == -1;
+
+            if (curHealth <= 0)
+            {
+                Dead();
+            }
         }
     }
     void FixedUpdate()
-    {   
-        // Move By Key Control
-        float hor = Input.GetAxis("Horizontal");
+    {
+        if (isLive)
+        {
+            // Move By Key Control
+            float hor = Input.GetAxis("Horizontal");
 
-        rigid.AddForce(Vector2.right * hor, ForceMode2D.Impulse);
+            rigid.AddForce(Vector2.right * hor, ForceMode2D.Impulse);
 
-        if (rigid.velocity.x > maxSpeed) // Right Speed;
-            rigid.velocity = new Vector2(maxSpeed, rigid.velocity.y);
-        else if (rigid.velocity.x < maxSpeed * (-1)) // Left Speed;
-            rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
+            if (rigid.velocity.x > maxSpeed) // Right Speed;
+                rigid.velocity = new Vector2(maxSpeed, rigid.velocity.y);
+            else if (rigid.velocity.x < maxSpeed * (-1)) // Left Speed;
+                rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
+        }
 
         // Landing Platform
         if (rigid.velocity.y < 0)
@@ -61,13 +82,26 @@ public class Player : MonoBehaviour
 
             if (rayHit.collider != null)
             {
-                if (rayHit.distance <= 0.5f)
+                if (rayHit.distance <= 0.8f)
                 {
-                    Debug.Log(rigid.position.y);
                     isJumping = false;
                 }
             }
         }
+    }
+
+    private void Dead()
+    {
+        isLive = false;
+        transform.position = new Vector2(-1f, -1.4f);
+        Init();
+    }
+
+    private void Init()
+    {
+        curHealth = maxHealth;
+        isLive = true;
+        isJumping = false;
     }
 
     /*
