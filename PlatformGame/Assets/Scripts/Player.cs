@@ -9,10 +9,12 @@ public class Player : MonoBehaviour
     public float jumpPower;
     public float maxHealth;
     public float curHealth;
+    public Vector2 spawnPoint;
     public bool isLive;
 
     Rigidbody2D rigid;
     SpriteRenderer spriter;
+    Animator anim;
 
     public bool isJumping = false;
 
@@ -24,8 +26,10 @@ public class Player : MonoBehaviour
         maxHealth = 20f;
         curHealth = maxHealth;
         isLive = true;
+        spawnPoint = new Vector2(-1f, -1.4f);
         rigid = GetComponent<Rigidbody2D>();
         spriter = GetComponent<SpriteRenderer>();
+        anim = GetComponent<Animator>();
     }
 
     private void Update()
@@ -55,6 +59,15 @@ public class Player : MonoBehaviour
             if (curHealth <= 0)
             {
                 Dead();
+            }
+
+            if (Mathf.Abs(rigid.velocity.x) < 0.3)
+            {
+                anim.SetBool("isWalking", false);
+            }
+            else
+            {
+                anim.SetBool("isWalking", true);
             }
         }
     }
@@ -90,10 +103,11 @@ public class Player : MonoBehaviour
         }
     }
 
+
     private void Dead()
     {
         isLive = false;
-        transform.position = new Vector2(-1f, -1.4f);
+        transform.position = spawnPoint;
         Init();
     }
 
@@ -104,12 +118,4 @@ public class Player : MonoBehaviour
         isJumping = false;
     }
 
-    /*
-    private void OnCollisionEnter2D(Collision2D collision)
-    {   
-        if (collision.contacts[0].normal.y)
-        {
-            isJumping = false;
-        }
-    }*/
 }
