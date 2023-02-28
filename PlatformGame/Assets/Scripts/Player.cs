@@ -18,6 +18,19 @@ public class Player : MonoBehaviour
 
     public bool isJumping = false;
 
+    // Mobile Key Var
+    int upValue;
+    int leftValue;
+    int rightValue;
+    bool upDown;
+    bool downDown;
+    bool leftDown;
+    bool rightDown;
+    bool upUp;
+    bool leftUp;
+    bool rightUp;
+    bool isButton;
+
     // Start is called before the first frame update
     public void Awake()
     {
@@ -30,6 +43,7 @@ public class Player : MonoBehaviour
         rigid = GetComponent<Rigidbody2D>();
         spriter = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        isButton = false;
     }
 
     private void Update()
@@ -39,22 +53,56 @@ public class Player : MonoBehaviour
             if (Input.GetButton("Jump") && !isJumping)
             {
                 rigid.velocity = Vector2.zero;
-                // rigid.AddForce(new Vector2(0, jumpPower));
-                rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+                Vector2 jumpVelocity = Vector2.up * Mathf.Sqrt(jumpPower * -Physics.gravity.y);
+                rigid.AddForce(jumpVelocity, ForceMode2D.Impulse);
                 isJumping = true;
             }
+            else if (upValue == 1 && !isJumping)
+            {
+                rigid.velocity = Vector2.zero;
+                Vector2 jumpVelocity = Vector2.up * Mathf.Sqrt(jumpPower * -Physics.gravity.y);
+                rigid.AddForce(jumpVelocity, ForceMode2D.Impulse);
+                isJumping = true;
+            }
+
+            // PC
             else if (Input.GetButtonUp("Jump") && rigid.velocity.y > 0)
             {
                 rigid.velocity = rigid.velocity * 0.5f;
             }
+            // Mobile
+            else if (upValue == 0 && rigid.velocity.y > 0)
+            {
+                rigid.velocity = rigid.velocity * 0.5f;
+            }
 
+            // PC
             if (Input.GetButtonUp("Horizontal"))
             {
                 rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
             }
+            // Mobile
+            else if (leftValue == 0 && rightValue == 0)
+            {
+                rigid.velocity = new Vector2(rigid.velocity.x * 0.5f, rigid.velocity.y);
+            }
 
             if (Input.GetButtonDown("Horizontal"))
+            {
                 spriter.flipX = Input.GetAxisRaw("Horizontal") == -1;
+            }
+
+            else if (leftValue == -1 || rightValue == 1)
+            {
+                if (leftValue == -1)
+                {
+                    spriter.flipX = true;
+                }
+                else
+                {
+                    spriter.flipX = false;
+                }
+            }
 
             if (curHealth <= 0)
             {
@@ -76,8 +124,7 @@ public class Player : MonoBehaviour
         if (isLive)
         {
             // Move By Key Control
-            float hor = Input.GetAxis("Horizontal");
-
+            float hor = Input.GetAxis("Horizontal") + rightValue + leftValue;
             rigid.AddForce(Vector2.right * hor, ForceMode2D.Impulse);
 
             if (rigid.velocity.x > maxSpeed) // Right Speed;
@@ -95,7 +142,7 @@ public class Player : MonoBehaviour
 
             if (rayHit.collider != null)
             {
-                if (rayHit.distance <= 0.8f)
+                if (rayHit.distance <= 0.82f)
                 {
                     isJumping = false;
                 }
@@ -116,6 +163,44 @@ public class Player : MonoBehaviour
         curHealth = maxHealth;
         isLive = true;
         isJumping = false;
+    }
+
+    public void ButtonDown(string type)
+    {
+        switch (type)
+        {
+            case "UP":
+                upValue = 1;
+                upDown = true;
+                break;
+            case "LEFT":
+                leftValue = -1;
+                leftDown = true;
+                break;
+            case "RIGHT":
+                rightValue = 1;
+                rightDown = true;
+                break;
+        }
+    }
+
+    public void ButtonUp(string type)
+    {
+        switch (type)
+        {
+            case "UP":
+                upValue = 0;
+                upUp = true;
+                break;
+            case "LEFT":
+                leftValue = 0;
+                leftUp = true;
+                break;
+            case "RIGHT":
+                rightValue = 0;
+                rightUp = true;
+                break;
+        }
     }
 
 }
