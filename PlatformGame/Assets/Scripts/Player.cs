@@ -133,7 +133,8 @@ public class Player : MonoBehaviour
                 rigid.velocity = new Vector2(maxSpeed * (-1), rigid.velocity.y);
         }
 
-        // Landing Platform
+        // Landing Platform (RayCast)
+        /*
         if (rigid.velocity.y < 0)
         {
             Debug.DrawRay(rigid.position, Vector3.down, new Color(0, 1, 0));
@@ -143,6 +144,24 @@ public class Player : MonoBehaviour
             if (rayHit.collider != null)
             {
                 if (rayHit.distance <= 0.82f)
+                {
+                    isJumping = false;
+                }
+            }
+        }*/
+
+        // Landing Platform (BoxCast)
+        if (rigid.velocity.y < 0)
+        {
+            Debug.DrawRay(rigid.position, Vector3.down, new Color(0, 1, 0));
+
+            Vector3 boxSize = new Vector3(1, 1, 1);
+            RaycastHit2D boxHit = Physics2D.BoxCast(rigid.position, boxSize/2, 0f,
+                Vector2.down,  1f, LayerMask.GetMask("Platform"));
+            
+            if (boxHit.collider != null)
+            {
+                if (boxHit.distance <= 0.62f)
                 {
                     isJumping = false;
                 }

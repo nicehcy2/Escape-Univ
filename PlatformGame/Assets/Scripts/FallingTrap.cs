@@ -18,6 +18,7 @@ public class FallingTrap : MonoBehaviour
         y = transform.position.y;
     }
 
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.name.Equals("Player"))
@@ -31,6 +32,12 @@ public class FallingTrap : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             player.curHealth -= 20;
+            fallingTrap.SetActive(false);
+            Init();
+        }
+
+        if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Trap")
+        {
             fallingTrap.SetActive(false);
             Init();
         }
