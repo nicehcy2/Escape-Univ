@@ -6,7 +6,7 @@ public class MovingBlock : MonoBehaviour
 {
     Rigidbody2D rigid;
     Vector3 pos; //현재위치
-    float delta = 4.0f; // 좌(우)로 이동가능한 (x)최대값
+    float delta = 5.0f; // 좌(우)로 이동가능한 (x)최대값
     float speed = 0.7f; // 이동속도
 
     void Start()

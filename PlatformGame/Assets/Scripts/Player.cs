@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
     // Start is called before the first frame update
     public void Awake()
     {
-        jumpPower = 10f;
+        jumpPower = 6f;
         maxSpeed = 3f;
         maxHealth = 20f;
         curHealth = maxHealth;
@@ -73,7 +73,7 @@ public class Player : MonoBehaviour
             // Mobile
             else if (upValue == 0 && rigid.velocity.y > 0)
             {
-                rigid.velocity = rigid.velocity * 0.5f;
+                // rigid.velocity = rigid.velocity * 0.5f;
             }
 
             // PC
@@ -84,7 +84,7 @@ public class Player : MonoBehaviour
             // Mobile
             else if (leftValue == 0 && rightValue == 0)
             {
-                rigid.velocity = new Vector2(rigid.velocity.x * 0.5f, rigid.velocity.y);
+                // rigid.velocity = new Vector2(rigid.velocity.x * 0.5f, rigid.velocity.y);
             }
 
             if (Input.GetButtonDown("Horizontal"))
@@ -104,7 +104,13 @@ public class Player : MonoBehaviour
                 }
             }
 
+            if (Input.GetButtonDown(""))
+
             if (curHealth <= 0)
+            {
+                Dead();
+            }
+            if (rigid.position.y <= -10)
             {
                 Dead();
             }
@@ -161,7 +167,7 @@ public class Player : MonoBehaviour
             
             if (boxHit.collider != null)
             {
-                if (boxHit.distance <= 0.62f)
+                if (boxHit.distance <= 0.9f)
                 {
                     isJumping = false;
                 }
