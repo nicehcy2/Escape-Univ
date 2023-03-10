@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     public float curHealth;
     public Vector2 spawnPoint;
     public bool isLive;
+    bool isShifting;
 
     Rigidbody2D rigid;
     SpriteRenderer spriter;
@@ -22,6 +23,7 @@ public class Player : MonoBehaviour
     int upValue;
     int leftValue;
     int rightValue;
+    int downValue;
     bool upDown;
     bool downDown;
     bool leftDown;
@@ -104,7 +106,12 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (Input.GetButtonDown(""))
+            if (isShifting == true)
+            {
+                curHealth = 1099999999;
+                isShifting = false;
+            }
+
 
             if (curHealth <= 0)
             {
@@ -206,6 +213,11 @@ public class Player : MonoBehaviour
                 rightValue = 1;
                 rightDown = true;
                 break;
+            case "DOWN":
+                downValue = -1;
+                downDown = true;
+                isShifting = true;
+                break;
         }
     }
 
@@ -224,6 +236,10 @@ public class Player : MonoBehaviour
             case "RIGHT":
                 rightValue = 0;
                 rightUp = true;
+                break;
+            case "DOWN":
+                downValue = 0;
+                isShifting = true;
                 break;
         }
     }

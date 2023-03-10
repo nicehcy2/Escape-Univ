@@ -4,19 +4,15 @@ using UnityEngine;
 
 public class CheckPoint : MonoBehaviour
 {
-    Rigidbody2D checkPoint;
+    public Vector2 newSpawnPoint;
     public Player player;
 
-    private void Start()
-    {
-        checkPoint = GetComponent<Rigidbody2D>();   
-    }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.gameObject.tag == "Player")
         {
-            player.spawnPoint = new Vector2(checkPoint.transform.position.x, checkPoint.transform.position.y + 10);
+            player.spawnPoint = newSpawnPoint;
         }
     }
 }

@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FallingTrap : MonoBehaviour
+public class SideTrap : MonoBehaviour
 {   
     public Player player;
-    public GameObject fallingTrap;
+    public GameObject sideTrap;
     Rigidbody2D rigid;
     SpriteRenderer renderer;
 
@@ -13,11 +13,20 @@ public class FallingTrap : MonoBehaviour
 
     // Start is called before the first frame update
     void Start()
-    {
+    {   
         rigid = GetComponent<Rigidbody2D>();
         renderer = GetComponent<SpriteRenderer>();
         x = transform.position.x;
         y = transform.position.y;
+    }
+
+    private void Update()
+    {
+        if (rigid.position.x <= x - 10)
+        {
+            sideTrap.SetActive(false);
+            Invoke("Init", 2);
+        }
     }
 
     IEnumerator FadeIn()
@@ -34,7 +43,7 @@ public class FallingTrap : MonoBehaviour
     {
         if (collision.gameObject.name.Equals("Player"))
         {
-            rigid.isKinematic = false;
+            rigid.AddForce(Vector2.left * 150.0f);
         }
     }
 
@@ -43,13 +52,13 @@ public class FallingTrap : MonoBehaviour
         if (collision.gameObject.tag == "Player")
         {
             player.curHealth -= 20;
-            fallingTrap.SetActive(false);
+            sideTrap.SetActive(false);
             Invoke("Init", 2);
         }
 
         if (collision.gameObject.tag == "Ground" || collision.gameObject.tag == "Trap")
         {
-            fallingTrap.SetActive(false);
+            sideTrap.SetActive(false);
             Invoke("Init", 2);
         }
     }
@@ -57,9 +66,8 @@ public class FallingTrap : MonoBehaviour
     private void Init()
     {
         rigid.velocity = new Vector2(0, 0);
-        fallingTrap.transform.position = new Vector2(x, y);
-        fallingTrap.SetActive(true);
+        sideTrap.transform.position = new Vector2(x, y);
+        sideTrap.SetActive(true);
         StartCoroutine("FadeIn");
-        rigid.isKinematic = true;
     }
 }
