@@ -70,7 +70,7 @@ public class Player : MonoBehaviour
             // PC
             else if (Input.GetButtonUp("Jump") && rigid.velocity.y > 0)
             {
-                //rigid.velocity = rigid.velocity * 0.5f;
+                // rigid.velocity = rigid.velocity * 0.5f;
             }
             // Mobile
             else if (upValue == 0 && rigid.velocity.y > 0)
@@ -81,7 +81,7 @@ public class Player : MonoBehaviour
             // PC
             if (Input.GetButtonUp("Horizontal"))
             {
-                //rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
+                // rigid.velocity = new Vector2(rigid.velocity.normalized.x * 0.5f, rigid.velocity.y);
             }
             // Mobile
             else if (leftValue == 0 && rightValue == 0)
