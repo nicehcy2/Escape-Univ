@@ -1,4 +1,4 @@
-# LoginGameWithUnity
+# Escape Univ.
 
 This repository is the platform game made with Unity 2020.3.7f1 and Visual Studio 2022 version.
 
